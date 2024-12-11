@@ -166,6 +166,41 @@ export function ClientPatches(
                     gamebuild&0xff,
                     (gamebuild>>8)&0xff
                 ]]
+            ]),
+            patch('windowed-mode-gamma-fix', [
+                [0xE94, [0xEB]]
+            ]),
+
+            patch('melee-swing-right-click', [
+                [0x2E1C67, [0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90]]
+            ]),
+
+            patch('npc-turn-attack-anim', [
+                [0x33D7C9, [0xEB]]
+            ]),
+
+            patch('npc-evade-ghost-attack', [
+                [0x355BF, [0xEB]]
+            ]),
+
+            patch('bring-back-twin-moon', [
+                [0x5CFBC0, [0xC7, 0x05, 0x74, 0x8E, 0xD3, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xC3]]
+            ]),
+
+            patch('rce-exploit-fix-1', [
+                [0x2A7, [0xC0]]
+            ]),
+
+            patch('rce-exploit-fix-2', [
+                [0x3D9D7C, [0x90, 0x90]]
             ])
+
+            // Enable it after OpenAzeroth's Stormwind is integrated to Wintersong.
+            // patch('occluder-issue', [
+            //     [0x6EE040, [0x9f]],
+            //     [0x6EE041, [0x86]],
+            //     [0x6EE042, [0x01]],
+            //     [0x6EE043, [0x00]]
+            // ])
         ]
 }
