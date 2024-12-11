@@ -24,9 +24,10 @@ export enum RaceIDs {
     , TAUREN   = 6
     , GNOME    = 7
     , TROLL    = 8
-    //
     , BLOODELF = 10
     , DRAENEI  = 11
+    , HIGHELF  = 12
+    , FORESTTROLL = 18
 }
 
 export enum RaceMask {
@@ -41,4 +42,6 @@ export enum RaceMask {
     //
     , BLOODELF = 0x200
     , DRAENEI  = 0x400
+    , HIGHELF  = 0x800
+    , FORESTTROLL = 0x20000
 }
