@@ -3677,6 +3677,7 @@ declare function ShowRepairCursor():void;
 declare function GetNumBuybackItems():number;
 
 declare function SetPortraitToTexture(texture:WoWAPI.Texture,path:string):void;
+declare function SetPortraitTexture(texture:WoWAPI.Texture,unitToken:WoWAPI.UnitId,disableMasking?:boolean):void;
 
 declare const MAX_PLAYER_LEVEL_TABLE: {
     LE_EXPANSION_CLASSIC: 60,
@@ -12107,6 +12108,11 @@ declare namespace WoWAPI {
         GetItem(): LuaMultiReturn<[string, ItemLink]>;
 
         /**
+         * Get the text for the Tooltip
+         */
+        GetText(): string;
+
+        /**
          * unknown
          */
         GetMinimumWidth(): Unknown;
@@ -12346,6 +12352,13 @@ declare namespace WoWAPI {
         SetSpell(spellBookId: number, bookType: "pet" | "spell"): void;
 
         /**
+         * Shows the tooltip for the specified spell
+         * @param spellID the id of the spell
+         * @see https://wowpedia.fandom.com/wiki/UIOBJECT_GameTooltip
+         */
+        SetSpellByID(spellID: number): void;
+
+        /**
          * Shows the tooltip for the specified talent
          * @param tabIndex the index of the talent tab
          * @param talentIndex the index of the talent on the tab
@@ -12449,7 +12462,7 @@ declare namespace WoWAPI {
     type VerticalAlign = "TOP" | "MIDDLE" | "BUTTOM";
     type Point = "TOP" | "RIGHT" | "BOTTOM" | "LEFT" | "TOPRIGHT" | "TOPLEFT" | "BOTTOMLEFT" | "BOTTOMRIGHT" | "CENTER";
     type Anchor = "ANCHOR_TOP" | "ANCHOR_RIGHT" | "ANCHOR_BOTTOM" | "ANCHOR_LEFT" | "ANCHOR_TOPRIGHT" | "ANCHOR_BOTTOMRIGHT" | "ANCHOR_TOPLEFT" | "ANCHOR_BOTTOMLEFT" | "ANCHOR_CURSOR" | "ANCHOR_PRESERVE" | "ANCHOR_NONE"
-    type Layer = "BACKGROUND" | "ARTWORK" | "OVERLAY";
+    type Layer = "BACKGROUND" | "BORDER" | "ARTWORK" | "OVERLAY" | "HIGHLIGHT";
     type FrameStrata = "WORLD" | "BACKGROUND" | "LOW" | "MEDIUM" | "HIGH" | "DIALOG" | "FULLSCREEN" | "FULLSCREEN_DIALOG" | "TOOLTIP";
     type Wrap = "CLAMP" | "CLAMPTOBLACK" | "CLAMPTOBLACKADDITIVE" | "CLAMPTOSHITE" | "REPEAT" | true | "MIRROR";
     type MouseButton = "LeftButton" | "RightButton" | "Middle" | "Button4" | "Button5";
@@ -12498,9 +12511,35 @@ declare namespace WoWAPI {
 
     type UIDropdownInfo = {
         text: string,
+        icon?: string,
+        value?: any,
         func?: () => void,
-        checked: boolean
+        arg1?: any,
+        arg2?: any,
+        isTitle?: boolean,
+        disabled?: boolean,
+        checked?: boolean,
+        hasArrow?: boolean,
+        hasColorSwatch?: boolean,
+        r?: number,
+        g?: number,
+        b?: number,
+        colorCode?: string,
+        swatchFunc?: () => void,
+        hasOpacity?: boolean,
+        opacity?: number,
+        opacityFunc?: () => void,
+        cancelFunc?: () => void,
+        notClickable?: boolean,
+        notCheckable?: boolean,
+        keepShownOnClick?: boolean,
+        tooltipTitle?: string,
+        tooltipText?: string,
+        justifyH?: WoWAPI.HorizontalAlign,
+        menuList?: object
     };
+
+    type UIDropDownMenuDisplayMode = "" | "MENU";
 
     /**
      * The Frame type
@@ -12951,6 +12990,13 @@ declare namespace WoWAPI {
          * "MOD" - Ignores the alpha channel, multiplying the image against the back-ground.
          */
         SetBlendMode(mode: WoWAPI.BlendMode): void;
+
+        /**
+         * 
+         * @param desaturated 1 to make the image grayscale, 0/nil for the original colors
+         * @returns shaderSupported - returns nil if desaturation isn't supported by the user's graphics card
+         */
+        SetDesaturated(desaturated: number): boolean;
     }
 
     /**
@@ -12974,10 +13020,24 @@ declare namespace WoWAPI {
         SetText(text: string): void;
 
         /**
+         * Sets the text displayed in the font string using format specifiers. Equivalent to :SetText(string.format("format", value)), but does not create a throwaway Lua string object, resulting in greater memory-usage efficiency.
+         * @param format A string containing format specifiers (as with string.format()).
+         * @param args A list of values to be included in the formatted string.
+         */
+        SetFormattedText(format: string, ...args: string[]): void;
+
+        /**
          * Returns how wide the string would be, in pixels, without wrapping
          * @see https://wow.gamepedia.com/API_FontString_GetStringWidth
          */
         GetStringWidth(): number;
+
+        /**
+         * Sets whether a frame's text should wrap
+         * @param wrap true to allow text wrapping for children, false to disallow
+         * @see https://warcraft.wiki.gg/wiki/API_FontString_SetWordWrap
+         */
+        SetWordWrap(wrap: boolean): void;
     }
 
     /**
@@ -13305,6 +13365,13 @@ declare namespace WoWAPI {
         SetMovable(movable: boolean): void;
 
         /**
+         * Sets whether a frame's children can be clipped
+         * @param clipsChildren true to allow clipping for children, false to disallow
+         * @see https://warcraft.wiki.gg/wiki/API_Frame_SetClipsChildren
+         */
+        SetClipsChildren(clipsChildren: boolean): void;
+
+        /**
          * Starts moving the frame-inheriting widget as the user moves the mouse cursor
          * @see https://wow.gamepedia.com/API_Frame_StartMoving
          */
@@ -13322,6 +13389,16 @@ declare namespace WoWAPI {
          * @see https://wow.gamepedia.com/API_Frame_SetFrameLevel
          */
         SetFrameLevel(level: number): void;
+
+        /**
+         * Modifies the size of the frame's hit rectangle - the area in which clicks are sent to the frame in question
+         * @param left pixels to move the frame's left hit edge to the right by
+         * @param right pixels to move the frame's right hit edge to the left by
+         * @param top pixels to move the frame's top hit edge down by
+         * @param bottom pixels to move the frame's bottom hit edge up by
+         * @see https://wowpedia.fandom.com/wiki/API_Frame_SetHitRectInsets
+         */
+        SetHitRectInsets(left: number, right: number, top: number, bottom: number): void;
 
         RegisterForDrag(button: WoWAPI.MouseButton): void;
 
@@ -13959,9 +14036,10 @@ declare function UIDropDownMenu_SetText(dropdown: WoWAPI.Frame, text: string): v
  * initialize the given dropdown frame
  *
  * @param dropdown the dropdown frame
- * @param callback the initializer function
+ * @param initFunc the initializer function
+ * @param displayMode if "MENU", the visual elements of dropDown will be hidden and the menu, when shown, will be styled as a context menu rather than a dropdown list
  */
-declare function UIDropDownMenu_Initialize(dropdown: WoWAPI.Frame, callback: (self: WoWAPI.Frame, level: number, menuList: number) => void): void;
+declare function UIDropDownMenu_Initialize(dropdown: WoWAPI.Frame, initFunc: (self: WoWAPI.Frame, level: number, menuList: object) => void, displayMode?: WoWAPI.UIDropDownMenuDisplayMode, level?: number, menuList?: object): void;
 
 /**
  * create an info object for a dropdown element
@@ -13972,8 +14050,24 @@ declare function UIDropDownMenu_CreateInfo(): WoWAPI.UIDropdownInfo;
  * add the given info object to the current inizialized dropdown frame
  *
  * @param info the info to add
+ * @param level nesting level to which the menu item should be added. If 1, the menu item will be added to the outer-most menu level; 2 will add it to the first open sub-menu, 3 to the second open sub-menu, etc.
  */
-declare function UIDropDownMenu_AddButton(info: WoWAPI.UIDropdownInfo): void;
+declare function UIDropDownMenu_AddButton(info: WoWAPI.UIDropdownInfo, level?: number): void;
+
+/**
+ * Toggles a dropdown menu
+ * 
+ * @param level Nesting level of this dropdown
+ * @param value Custom value for the dropdown item, if 'level' > 1
+ * @param dropDownFrame The frame object to toggle, not its string name. This object should be derived from 'UIDropDownMenuTemplate'
+ * @param anchorName Sets the 'relativeTo' member of this frame
+ * @param xOffset Sets the x offset
+ * @param yOffset Sets the y offset
+ * @param menuList Automatically Passed to the to 'menuList' on the API UIDropDownMenu_Initialize function, and set to 'menuList' member on the dropDownFrame frame table
+ * @param button Drop down menu anchor point. Default is 'dropDownFrame' or successive parent dropdown menu button
+ * @param autoHideDelay Seconds to delay before hiding an inactive menu. Default is 2.
+ */
+declare function ToggleDropDownMenu(level: number, value: any, dropDownFrame: WoWAPI.Frame, anchorName?: string | WoWAPI.Frame, xOffset?: number, yOffset?: number, menuList?: object, button?: object, autoHideDelay?: number): void;
 
 declare function PlaySoundFile(path:string): void;
 declare function PlaySound(soundIndex:number): void;
@@ -14043,6 +14137,7 @@ declare function InterfaceOptions_AddCategory(panel: WoWAPI.FrameInterfaceCatego
 
 declare namespace WoWAPI {
     type UnitIdArena = "arena1" | "arena2" | "arena3" | "arena4" | "arena5";
+    type UnitIdBoss = "boss1" | "boss2" | "boss3" | "boss4" | "boss5" | "boss6" | "boss7" | "boss8";
     type UnitIdRaidPlayer = "raid1" | "raid2" | "raid3" | "raid4" | "raid5" | "raid6" | "raid7" | "raid8" | "raid9" |
         "raid10" | "raid11" | "raid12" | "raid13" | "raid14" | "raid15" | "raid16" | "raid17" | "raid18" | "raid19" | "raid20" |
         "raid21" | "raid22" | "raid23" | "raid24" | "raid25" | "raid26" | "raid27" | "raid28" | "raid29" | "raid30" | "raid31" |
@@ -14055,7 +14150,7 @@ declare namespace WoWAPI {
     type UnitIdParty = "party1" | "party2" | "party3" | "party4";
     type UnitIdPartyPet = "partypet1" | "partypet2" | "partypet3" | "partypet4";
     type UnitIdOther = "player" | "pet" | "focus" | "mouseover" | "vehicle" | "target" | "none" | "npc" | "targettarget";
-    type UnitId = UnitIdOther | UnitIdArena | UnitIdRaidPlayer | UnitIdRaidPlayerPet | UnitIdParty | UnitIdPartyPet;
+    type UnitId = UnitIdOther | UnitIdArena | UnitIdBoss | UnitIdRaidPlayer | UnitIdRaidPlayerPet | UnitIdParty | UnitIdPartyPet;
 
     type UnitRoleType = "TANK" | "DAMAGER" | "HEALER";
 
