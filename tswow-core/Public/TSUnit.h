@@ -128,6 +128,9 @@ public:
     TSAura  GetAuraOfRankedSpell(uint32 spellID, TSGUID casterGUID = EmptyGUID(), TSGUID itemCasterGUID = EmptyGUID(), uint8 reqEffMask = 0);
     TSAuraApplication GetAuraApplication(uint32 spellID, TSGUID casterGUID = EmptyGUID(), TSGUID itemCasterGUID = EmptyGUID(), uint8 reqEffMask = 0, TSAuraApplication except = TSAuraApplication());
     TSAuraApplication GetAuraApplicationOfRankedSpell(uint32 spellID, TSGUID casterGUID = EmptyGUID(), TSGUID itemCasterGUID = EmptyGUID(), uint8 reqEffMask = 0, TSAuraApplication except = TSAuraApplication());
+    uint32 GetAttackTime(uint8 att);
+    float GetTotalAttackPowerValue(uint8 attType);
+    float SpellBaseDamageBonusDone(uint32 schoolMask);
     int32 GetTotalAuraModifier(uint32 auraType);
     float GetTotalAuraMultiplier(uint32 auraType);
     int32 GetTotalAuraModifierByMiscMask(uint32 auraType, uint32 miscMask);

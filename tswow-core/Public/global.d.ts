@@ -6700,7 +6700,9 @@ declare interface TSUnit extends TSWorldObject {
     GetAuraApplications(): TSArray<TSAuraApplication>;
 
     GetAuraEffectsByType(type: AuraType): TSArray<TSAuraEffect>;
-
+    GetAttackTime(att: WeaponAttackType): uint32;
+    GetTotalAttackPowerValue(attType: WeaponAttackType): float;
+    SpellBaseDamageBonusDone(schoolMask: SpellSchoolMask): float;
     GetTotalAuraModifier(auraType: AuraType): int32;
     GetTotalAuraModifierByMiscMask(auraType: AuraType, miscMask: uint32): int32;
     GetTotalAuraMultiplier(auraType: AuraType): float;

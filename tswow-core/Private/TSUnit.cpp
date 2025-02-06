@@ -2502,6 +2502,21 @@ TSArray<TSAuraEffect> TSUnit::GetAuraEffectsByType(uint32 type)
     return effects;
 }
 
+uint32 TSUnit::GetAttackTime(uint8 att)
+{
+    return unit->GetAttackTime(WeaponAttackType(att));
+}
+
+float TSUnit::GetTotalAttackPowerValue(uint8 attType)
+{
+    return unit->GetTotalAttackPowerValue(WeaponAttackType(attType));
+}
+
+float TSUnit::SpellBaseDamageBonusDone(uint32 schoolMask)
+{
+    return unit->SpellBaseDamageBonusDone(SpellSchoolMask(schoolMask));
+}
+
 int32 TSUnit::GetTotalAuraModifier(uint32 auraType)
 {
     return unit->GetTotalAuraModifier(AuraType(auraType));
