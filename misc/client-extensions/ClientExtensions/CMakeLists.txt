@@ -29,6 +29,12 @@ SET(CLIENT_EXTENSIONS_H
     ClientMPQ.h
     FSRoot.h
     lua.hpp
+    ClientExtensions.h
+    SharedDefines.h
+    Characters/CharacterDefines.h
+    Characters/CharacterFixes.h
+    Tooltip/TooltipDefines.h
+    Tooltip/SpellTooltipExtensions.h
 )
 
 SET(CLIENT_EXTENSIONS_CPP
@@ -40,7 +46,11 @@ SET(CLIENT_EXTENSIONS_CPP
     FSRoot.cpp
     TestModule.cpp
     ClientNetwork.cpp
-    ClientMPQ.cpp)
+    ClientMPQ.cpp
+    ClientExtensions.cpp
+    Characters/CharacterFixes.cpp
+    Tooltip/SpellTooltipExtensions.cpp
+)
 
 SET(CLIENT_EXTENSIONS_LUA
     ClientNetwork.lua
