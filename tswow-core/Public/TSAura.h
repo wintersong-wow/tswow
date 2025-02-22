@@ -94,7 +94,6 @@ public:
     void SetDuration(int32 duration);
     void SetMaxDuration(int32 duration);
     void SetStackAmount(uint8 amount);
-    void RefreshDuration();
     void Remove();
 private:
     TSLua::Array<TSAuraApplication> LGetApplications();
