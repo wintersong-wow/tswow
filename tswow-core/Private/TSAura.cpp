@@ -364,6 +364,11 @@ void TSAura::SetStackAmount(uint8 amount)
 #endif
 }
 
+void TSAura::RefreshDuration()
+{
+    aura->RefreshDuration();
+}
+
 /**
  * Remove this [Aura] from the [Unit] it is applied to.
  */

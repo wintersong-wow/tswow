@@ -3426,6 +3426,11 @@ declare interface TSAura extends TSEntityProvider {
     SetStackAmount(amount : uint8) : void
 
     /**
+     * Refreshes the aura's duration.
+     */
+    RefreshDuration(): void
+
+    /**
      * Remove this [Aura] from the [Unit] it is applied to.
      */
     Remove() : void
