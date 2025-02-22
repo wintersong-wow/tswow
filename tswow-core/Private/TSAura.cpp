@@ -347,6 +347,11 @@ void TSAura::SetMaxDuration(int32 duration)
 #endif
 }
 
+void TSAura::RefreshDuration()
+{
+    aura->RefreshDuration();
+}
+
 /**
  * Change the amount of times the [Aura] has "stacked" on the [Unit].
  *
