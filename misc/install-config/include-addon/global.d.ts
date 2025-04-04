@@ -13333,6 +13333,13 @@ declare namespace WoWAPI {
         SetAttribute(name: string, value: any): void;
 
         /**
+         * get an attribute on the frame
+         *
+         * @param name the name of the attribute to get
+         */
+        GetAttribute(name: string): any;
+
+        /**
          * Unregisters the widget from receiving OnEvent notifications for a particular event.
          *
          * @param eventName The name of the event the object wishes to no longer monitor. See Events.
@@ -23080,9 +23087,11 @@ declare function UIDropDownMenu_AddButton(info: WoWAPI.UIDropdownInfo, level?: n
  * @param autoHideDelay Seconds to delay before hiding an inactive menu. Default is 2.
  */
 declare function ToggleDropDownMenu(level: number, value: any, dropDownFrame: WoWAPI.Frame, anchorName?: string | WoWAPI.Frame, xOffset?: number, yOffset?: number, menuList?: object, button?: object, autoHideDelay?: number): void;
+ 
+declare type SoundChannel = "Master" | "SFX" | "Ambience" | "Music";
 
 declare function PlaySoundFile(path:string): void;
-declare function PlaySound(soundIndex:number): void;
+declare function PlaySound(soundName: string, channel?: SoundChannel): void;
 
 /**
  * comma separated list of enabled flags

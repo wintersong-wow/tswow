@@ -5741,6 +5741,8 @@ declare interface TSWorldObject extends TSObject, TSWorldEntityProvider<TSWorldO
     GetCreature(guid: TSNumber<uint32> | TSGUID): TSCreature | undefined
     GetPlayer(guid: TSNumber<uint32> | TSGUID): TSPlayer | undefined
     GetFactionTemplate(): TSFactionTemplate
+    GetMapHeight(x: TSNumber<float>, y: TSNumber<float>, z: TSNumber<float>): TSNumber<float>
+    GetFloorZ(): TSNumber<float>;
 }
 
 declare interface TSWorldObjectCollection {
